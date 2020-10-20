@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shutterstock Link Origin Mass Opener</title>
+    <link rel="icon" href="ico/shuttered144.ico">
+</head>
+<body>
+    <textarea id="links_area" name="w3review" rows="15" cols="150">
+        Put links here
+    </textarea>
+
+    <button onclick=checkQuery();>OPEN ALL</button>
+
+<script>
+let textAll;
+let textArray = [];
+let linksArray = [];
+let properLinksArray = [];
+let linksArea = document.getElementById('links_area');
+let queryData = linksArea.value;
+
+linksArea.addEventListener('focus', function() {
+    linksArea.value = '';
+    queryData = linksArea.value;
+});
+
+function checkQuery() {
+    queryData = linksArea.value;
+    if (queryData == '') {
+        console.log('\n===== query is empty =====\n');
+    } else {
+        textAll = linksArea.value;
+        console.log('\nInputed text:');
+        console.log(textAll);
+        textAll = textAll.replace(/\r+/g, ' ').replace(/\n/g, ' ').replace(/\s\s+/g, ' ').replace(/\/ru\//g, '/').trim();
+        console.log('\nStringified text:');
+        console.log(textAll);
+
+        textArray = textAll.split(' ');
+        console.log('\nArray:');
+        console.log(textArray);
+
+        linksArray = textArray.filter(checkLink);
+        console.log('\nFiltered array:');
+        console.log(linksArray);
+
+        properLinksArray = linksArray.map(formatLink);
+        console.log('\nOutput LINKS array:');
+        console.log(properLinksArray);
+
+        openAll();
+    }
+}
+
+function checkLink(textString) {
+    // console.log(`array element: ${Number.isInteger(parseInt(textString.slice(-4)))}`);
+    return (textString.slice(-4) == '.jpg' || (Number.isInteger(parseInt(textString.slice(-5)))) && (parseInt(textString.slice(-5)) > 9));
+}
+
+function formatLink(link) {
+    if (link.slice(0, 12) == 'https://www.') {
+        return link;
+    } else {
+        return link = 'https://www.shutterstock.com/search/'+parseInt(link.match(/\d+(.jpg)?$/)[0], 10);
+    }
+    // if (link.slice(0, 12) == 'stock-photo-' || link.slice(0, 12) == 'stock-vector') return link = 'https://www.shutterstock.com/search/'+parseInt(link.match(/\d+(.jpg)?$/)[0], 10);
+    // if (link.slice(0, 12) == 'stock-vector') return link = 'https://www.shutterstock.com/search/'+parseInt(link.match(/\d+$/)[0], 10);
+}
+
+function openAll() {   
+    for (let i = 0; i < properLinksArray.length; i++) {
+        window.open(properLinksArray[i], '_blank');
+    }
+    console.log('\n===== end of query =====\n');
+}
+
+</script>
+</body>
+</html>
